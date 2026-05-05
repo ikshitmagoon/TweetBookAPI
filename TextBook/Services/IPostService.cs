@@ -4,14 +4,14 @@ using TweetBook.Domain;
 namespace TweetBook.Services
 {
     public interface IPostService
-    {
-        List<Post> GetPosts();
+    { 
+        Task<List<Post>> GetPostsAsync();
 
-        Post GetPostById(Guid id);
+        Task<Post> GetPostByIdAsync(Guid id);
 
-        Post CreatePost(CreatePostRequest post);
-        bool UpdatePost(Post post);
-        bool DeletePost(Guid id);
+        Task<bool> CreatePostAsync(Post post);
+        Task<bool> UpdatePostAsync(Post post);
+        Task<bool> DeletePostAsync(Guid id);
 
     }
 }
