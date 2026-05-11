@@ -4,6 +4,8 @@ using Microsoft.OpenApi;
 using System.Text;
 using TweetBook.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Security.Principal;
+using TweetBook.Services;
 
 namespace TweetBook.Installer
 {
@@ -12,6 +14,7 @@ namespace TweetBook.Installer
        public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllersWithViews();
+            services.AddScoped<IIdentityService,IdentityService>(); 
             var jwtSettings=new JWTSettings();
             configuration.Bind(nameof(JWTSettings), jwtSettings);
             services.AddAuthentication(options =>

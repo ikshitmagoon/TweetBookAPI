@@ -15,5 +15,11 @@
             public const string Delete = $"{Base}" + "/posts/{postId}";
         }
 
+        public static class Identity
+        {
+            public const string Register = Base + "/identity/register";
+            public const string Login = Base + "/identity/login";
+        }
+
     }
 }
