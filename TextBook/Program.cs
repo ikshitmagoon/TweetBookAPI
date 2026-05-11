@@ -23,6 +23,12 @@ else
     app.UseHsts();
 }
 
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.MapStaticAssets();
+app.UseAuthentication();
 var swaggerOptions = new SwaggerOptions();
 builder.Configuration.GetSection(nameof(swaggerOptions)).Bind(swaggerOptions);
 app.UseSwagger(options =>
@@ -33,12 +39,6 @@ app.UseSwaggerUI(options => {
     options.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
 
 });
-app.UseHttpsRedirection();
-app.UseRouting();
-
-
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Test}/{action=api/user}/{id?}")
