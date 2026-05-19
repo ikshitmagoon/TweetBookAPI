@@ -10,7 +10,7 @@ using TweetBook.Services;
 
 namespace TweetBook.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     public class IdentityController : Controller
     {
         private readonly IIdentityService _identityService;
@@ -23,6 +23,14 @@ namespace TweetBook.Controllers.V1
         [HttpPost(ApiRoute.Identity.Register)]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
+                }
+                    );
+            }
             var authResponse = await _identityService.RegisterAsync(request.Email, request.Password);
 
             if (!authResponse.success)
@@ -35,6 +43,23 @@ namespace TweetBook.Controllers.V1
             return Ok(new AuthSuccessResponse
             {
                 token= authResponse.token
+            });
+        }
+        [HttpPost(ApiRoute.Identity.Login)]
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
+        { 
+            var authResponse = await _identityService.LoginAsync(request.Email, request.password);
+
+            if (!authResponse.success)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    ErrorMessage = authResponse.ErrorMessage
+                });
+            }
+            return Ok(new AuthSuccessResponse
+            {
+                token = authResponse.token
             });
         }
     }

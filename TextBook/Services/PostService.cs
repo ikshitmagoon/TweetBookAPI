@@ -78,5 +78,18 @@ namespace TweetBook.Services
             var deleted = await _dataContext.SaveChangesAsync();
             return deleted>0;
         }
+       public async Task<bool> UserOwnsPostAsync(Guid postId, string getUserId)
+        {
+            var post= await _dataContext.Posts.AsNoTracking().SingleOrDefaultAsync(x=>x.Id == postId);
+            if (post == null)
+            {
+                return false;
+            }
+            if(post.userId == getUserId)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

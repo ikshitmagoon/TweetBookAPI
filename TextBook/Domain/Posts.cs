@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TweetBook.Domain
 {
@@ -7,5 +9,9 @@ namespace TweetBook.Domain
         [Key]
         public Guid Id { get; set; }
         public string Name { get; set; }
+
+        public string userId { get; set; }
+        [ForeignKey(nameof(userId))]
+        public IdentityUser User { get; set; }
     }
 }

@@ -22,13 +22,21 @@ else
 {
     app.UseHsts();
 }
+using (var serviceScope = app.Services.CreateScope())
+{
+    var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
 app.MapStaticAssets();
+
+app.UseAuthorization();
 app.UseAuthentication();
+
 var swaggerOptions = new SwaggerOptions();
 builder.Configuration.GetSection(nameof(swaggerOptions)).Bind(swaggerOptions);
 app.UseSwagger(options =>
@@ -47,4 +55,4 @@ app.MapControllerRoute(
 app.MapRazorPages()
    .WithStaticAssets();
 
-app.Run();
+await app.RunAsync();

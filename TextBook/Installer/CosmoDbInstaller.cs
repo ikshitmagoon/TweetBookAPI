@@ -1,6 +1,6 @@
-﻿using Cosmonaut;
-using Cosmonaut.Extensions.Microsoft.DependencyInjection;
-using Microsoft.Azure.Documents.Client;
+﻿//using Cosmonaut;
+//using Cosmonaut.Extensions.Microsoft.DependencyInjection;
+//using Microsoft.Azure.Documents.Client;
 using Microsoft.Data.SqlClient;
 using TweetBook.Domain;
 

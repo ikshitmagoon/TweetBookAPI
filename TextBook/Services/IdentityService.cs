@@ -43,29 +43,59 @@ namespace TweetBook.Services
                     ErrorMessage = createdUser.Errors.Select(x => x.Description)
                 }; 
             }
-            var tokenHandler=new JwtSecurityTokenHandler();
-            var key=System.Text.Encoding.ASCII.GetBytes(_jwtSettings.secret);
+            
+            return GenerateJwtToken(newUser);
+        }
+         private AuthenticationResult GenerateJwtToken(IdentityUser user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = System.Text.Encoding.ASCII.GetBytes(_jwtSettings.secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub,newUser.Email),
-                    new Claim(JwtRegisteredClaimNames.Email,newUser.Email),
+                    new Claim(JwtRegisteredClaimNames.Sub,user.Email),
+                    new Claim(JwtRegisteredClaimNames.Email,user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                    new Claim("Id",newUser.Id)
+                    new Claim("Id",user.Id)
 
                 }),
                 Expires = DateTime.Now.AddHours(2),
-                SigningCredentials=new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token=tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
             return new AuthenticationResult
             {
                 success = true,
                 token = tokenHandler.WriteToken(token)
             };
-
         }
+        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        {
+            var User = await _userManager.FindByEmailAsync(email);
+            if (User == null)
+            {
+                return new AuthenticationResult
+                {
+
+                    ErrorMessage = new[] { "User Does Not Exist" }
+                };
+
+            }
+          
+            var CheckPassword = await _userManager.CheckPasswordAsync(User,password);
+
+            if (!CheckPassword)
+            {
+                return new AuthenticationResult
+                {
+
+                    ErrorMessage = new[] { "Password Combimation is Wrong" }
+                };
+            }
+           return GenerateJwtToken(User);
+        }
+
     }
 }
