@@ -1,3 +1,7 @@
 <Solution>
-  <Project Path="TextBook/TweetBook.csproj" />
+  <Folder Name="/Solution Items/" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+  <Project Path="Tweetbook/TweetBook.csproj" />
 </Solution>
