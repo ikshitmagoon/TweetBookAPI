@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  tweetbook:
+    image: ${DOCKER_REGISTRY-}tweetbook
+    build:  
+      context: Tweetbook
+      dockerfile: Dockerfile
+    ports:
+      - "5005:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=TweetBook;User Id=sa;Password=IKS29iks$;MultipleActiveResultSets=true;Encrypt=True;TrustServerCertificate=True
