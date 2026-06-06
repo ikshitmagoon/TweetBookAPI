@@ -8,7 +8,8 @@ namespace TweetBook.Services
         Task<List<Post>> GetPostsAsync();
 
         Task<Post> GetPostByIdAsync(Guid id);
-
+        Task<List<Tags>> GetTagsAsync();
+        Task<Tags> GetTagByIdAsync(Guid id);
         Task<bool> CreatePostAsync(Post post);
         Task<bool> UpdatePostAsync(Post post);
         Task<bool> DeletePostAsync(Guid id);

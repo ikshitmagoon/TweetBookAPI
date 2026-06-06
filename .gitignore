@@ -12,3 +12,9 @@
 /Tweetbook/obj
 /TweetBook.IntegrationTests/bin/Debug/net10.0
 /TweetBook.IntegrationTests/obj
+/Tweetbook/bin/Debug/net10.0/Microsoft.EntityFrameworkCore.InMemory.dll
+/Tweetbook/bin/Debug/net10.0/TweetBook.staticwebassets.endpoints.json
+/Tweetbook/bin/Debug/net10.0/TweetBook.deps.json
+/Tweetbook/bin/Debug/net10.0/TweetBook.dll
+/Tweetbook/bin/Debug/net10.0/TweetBook.exe
+/Tweetbook/bin/Debug/net10.0/TweetBook.pdb

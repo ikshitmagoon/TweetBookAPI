@@ -3,5 +3,6 @@
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>
+  <Project Path="TweetBook.IntegrationTests/TweetBook.IntegrationTests.csproj" Id="0290fa61-8183-4375-a7b8-30638dc146bf" />
   <Project Path="Tweetbook/TweetBook.csproj" />
 </Solution>

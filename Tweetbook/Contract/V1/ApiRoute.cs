@@ -8,9 +8,9 @@
         public static class Posts
         {
             public const string GetAll = $"{Base}/posts";
-            public const string Get = $"{Base}"+"/posts/{postId}";
+            public const string Get = $"{Base}" + "/posts/{postId}";
             //public const string GetTest= $"{Base}" + "/posts/{postId?}";
-            public const string Create = Base+ "/posts";
+            public const string Create = Base + "/posts";
             public const string Update = $"{Base}" + "/posts/{postId}";
             public const string Delete = $"{Base}" + "/posts/{postId}";
         }
@@ -21,6 +21,12 @@
             public const string Login = Base + "/identity/login";
             public const string Refresh = Base + "/identity/Refresh";
         }
-
+        public static class Tags
+        {
+            public const string GetAll = $"{Base}/tags";
+            public const string Get = $"{Base}" + "/tags/{tagsId}";
+            //public const string GetTest= $"{Base}" + "/posts/{postId?}";
+        
+        }
     }
 }

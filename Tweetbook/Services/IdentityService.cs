@@ -111,8 +111,10 @@ namespace TweetBook.Services
                 };
                
             }
+            var newUserID=Guid.NewGuid();
             var newUser = new IdentityUser
             {
+                Id = newUserID.ToString(),
                 Email = email,
                 UserName = email
             };
@@ -125,23 +127,32 @@ namespace TweetBook.Services
                     ErrorMessage = createdUser.Errors.Select(x => x.Description)
                 }; 
             }
-            
+
+            await _userManager.AddClaimAsync(newUser, new Claim("tag.view", "true"));
             return await GenerateJwtToken(newUser);
         }
          private async Task<AuthenticationResult> GenerateJwtToken(IdentityUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = System.Text.Encoding.ASCII.GetBytes(_jwtSettings.secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new List<Claim>
             {
-                Subject = new ClaimsIdentity(new[]
-                {
                     new Claim(JwtRegisteredClaimNames.Sub,user.Email),
                     new Claim(JwtRegisteredClaimNames.Email,user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                     new Claim("Id",user.Id)
 
-                }),
+                };
+            var userClaims= await _userManager.GetClaimsAsync(user);
+            claims.AddRange(userClaims);
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

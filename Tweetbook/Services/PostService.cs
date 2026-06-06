@@ -33,8 +33,15 @@ namespace TweetBook.Services
         {
             return await _dataContext.Posts.ToListAsync();
         }
-
-       public async Task<Post> GetPostByIdAsync(Guid id)
+        public async Task<List<Tags>> GetTagsAsync()
+        {
+            return await _dataContext.Tags.ToListAsync();
+        }
+        public async Task<Tags> GetTagByIdAsync(Guid id)
+        {
+            return await _dataContext.Tags.SingleOrDefaultAsync(x => x.CreaterId == id);
+        }
+        public async Task<Post> GetPostByIdAsync(Guid id)
         {
            return await _dataContext.Posts.SingleOrDefaultAsync(x => x.Id == id);
         }

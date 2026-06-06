@@ -39,20 +39,37 @@ namespace TweetBook.Controllers.V1
             return Ok(post);
         }
         [HttpPost(ApiRoute.Posts.Create)]
-        public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest) {
-         
+        public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
+        {
+            var post = new Post
+            {
+                Name = postRequest.Name,
+                userId= HttpContext.GetUserId()
+            };
 
-            var posts = new Post { Name = postRequest.Name ,
-            userId=HttpContext.GetUserId()};
-             await _PostService.CreatePostAsync(posts);
+            // Add multiple tags manually from request
+            foreach (var tagName in postRequest.Tags)
+            {
+                post.Tags.Add(new Tags
+                {
+                    CreaterId = Guid.NewGuid(),
+                    PostId = post.Id,
+                    Name = tagName,
+                    CreatedBy = HttpContext.GetUserId(),
+                    CreatedOn = DateTime.UtcNow
+                });
+            }
 
-            var BaseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUrl=BaseUrl+"/"+ApiRoute.Posts.Get.Replace("{postId}",posts.Id.ToString());
+            await _PostService.CreatePostAsync(post);
 
-            var response = new CreateResponse {Id = posts.Id };
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
+            var locationUrl = baseUrl + "/" + ApiRoute.Posts.Get.Replace("{postId}", post.Id.ToString());
 
-            return Created(locationUrl,response);
+            var response = new CreateResponse { Id = post.Id };
+
+            return Created(locationUrl, response);
         }
+
 
         [HttpPut(ApiRoute.Posts.Update)]
         public async Task<IActionResult> UpdatePost([FromRoute] Guid postId, [FromBody] UpdatePostRequest postRequest)
