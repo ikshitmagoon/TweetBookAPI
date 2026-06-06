@@ -10,3 +10,5 @@
 /obj
 /.vs/TweetBook/CopilotIndices/18.5.39162.45114
 /Tweetbook/obj
+/TweetBook.IntegrationTests/bin/Debug/net10.0
+/TweetBook.IntegrationTests/obj
