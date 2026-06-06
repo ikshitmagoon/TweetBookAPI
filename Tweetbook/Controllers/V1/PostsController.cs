@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TweetBook.Contract.V1;
@@ -7,6 +8,7 @@ using TweetBook.Contract.V1.Responses;
 using TweetBook.Domain;
 using TweetBook.Entensions;
 using TweetBook.Services;
+using static TweetBook.Contract.V1.ApiRoute;
 
 namespace TweetBook.Controllers.V1
 {
@@ -15,17 +17,19 @@ namespace TweetBook.Controllers.V1
     {
 
        public readonly IPostService _PostService;
+        private readonly IMapper _mapper;
 
-
-        public PostsController(IPostService postService)
+        public PostsController(IPostService postService, IMapper mapper)
         {
            _PostService = postService;
+            _mapper = mapper;
         }
         [HttpGet(ApiRoute.Posts.GetAll)]
             public async Task<IActionResult> GetAll()
         {
-
-            return Ok(await _PostService.GetPostsAsync());
+            var posts=await _PostService.GetPostsAsync();
+            var postReponses = _mapper.Map<List<CreateResponse>>(posts);
+            return Ok(postReponses);
         }
         [HttpGet(ApiRoute.Posts.Get)]
         public async Task<IActionResult> Get([FromRoute] Guid postId)
@@ -36,7 +40,7 @@ namespace TweetBook.Controllers.V1
             {
                 return NotFound();
             }
-            return Ok(post);
+            return Ok(_mapper.Map<CreateResponse>(post));
         }
         [HttpPost(ApiRoute.Posts.Create)]
         public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
@@ -50,7 +54,7 @@ namespace TweetBook.Controllers.V1
             // Add multiple tags manually from request
             foreach (var tagName in postRequest.Tags)
             {
-                post.Tags.Add(new Tags
+                post.Tags.Add(new TweetBook.Domain.Tags
                 {
                     CreaterId = Guid.NewGuid(),
                     PostId = post.Id,
@@ -65,7 +69,7 @@ namespace TweetBook.Controllers.V1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUrl = baseUrl + "/" + ApiRoute.Posts.Get.Replace("{postId}", post.Id.ToString());
 
-            var response = new CreateResponse { Id = post.Id };
+            var response = _mapper.Map<CreateResponse>(post);
 
             return Created(locationUrl, response);
         }
@@ -91,7 +95,7 @@ namespace TweetBook.Controllers.V1
                 return NotFound();
             }
 
-            return Ok(post);
+            return Ok(_mapper.Map<CreateResponse>(post));
 
         }
         [HttpDelete(ApiRoute.Posts.Delete)]

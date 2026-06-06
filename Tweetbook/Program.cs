@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -14,7 +15,17 @@ builder.Services.InstallServicesInAssembly(builder.Configuration);
 // Bind swagger options early so they are accessible to the pipeline building phase
 var swaggerOptions = new SwaggerOptions();
 builder.Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+builder.Services.AddSingleton<IMapper>(sp =>
+{
+    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+    var config = new MapperConfiguration(cfg =>
+    {
+        // Scan all assemblies for Profiles
+        cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+    },loggerFactory);
 
+    return config.CreateMapper();
+});
 var app = builder.Build();
 
 // 2. Configure the HTTP request pipeline
@@ -42,7 +53,7 @@ using (var serviceScope = app.Services.CreateScope())
         var userRole = new IdentityRole("User");
         await roleManager.CreateAsync(userRole);
     }
-    var adminEmails = new[] { "ikshit@gmail.com"};
+    var adminEmails = new[] { "ikshit@gmail.com","ikshit_magoon@optum.com"};
     foreach (var email in adminEmails)
     {
         var user = await userManager.FindByEmailAsync(email);

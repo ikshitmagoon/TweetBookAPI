@@ -54,7 +54,7 @@ namespace TweetBook.Installer
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("mustworkforOptum", policy => {
-                    policy.AddRequirements(new workForCOmpanyRequirement("optum.com"));
+                    policy.AddRequirements(new workForCOmpanyRequirement("Optum.com"));
                     }
           );
             });
