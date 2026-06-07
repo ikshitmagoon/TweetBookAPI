@@ -6,12 +6,14 @@ using System.Text.Json.Serialization;
 using TweetBook.Data;
 using TweetBook.Installer;
 using TweetBook.Options;
-
+using TweetBook.Validators;
+using FluentValidation;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add services to the container (Configuration must happen BEFORE Build)
 builder.Services.InstallServicesInAssembly(builder.Configuration);
-
+//builder.Services.AddControllers();
+//builder.Services.AddValidatorsFromAssemblyContaining<CreatePostRequestValidator>();
 // Bind swagger options early so they are accessible to the pipeline building phase
 var swaggerOptions = new SwaggerOptions();
 builder.Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -8,18 +10,30 @@ using System.Security.Principal;
 using System.Text;
 using System.Text.Json.Serialization;
 using TweetBook.Authorization;
+using TweetBook.Contract.V1.Requests;
+using TweetBook.Filters;
 using TweetBook.Options;
 using TweetBook.Services;
-
+using TweetBook.Validators;
 namespace TweetBook.Installer
 {
     public class mvcInstaller:Iinstaller
     {
        public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-          
-            services.AddControllersWithViews();
-            services.AddScoped<IIdentityService,IdentityService>(); 
+
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidationFilter>();
+            })
+  .ConfigureApiBehaviorOptions(options =>
+  {
+      options.SuppressModelStateInvalidFilter = true;
+  });
+
+            services.AddValidatorsFromAssemblyContaining<CreatePostRequestValidator>();
+            //services.AddControllersWithViews();
+            services.AddScoped<IIdentityService, IdentityService>();
             var jwtSettings=new JWTSettings();
             configuration.Bind(nameof(JWTSettings), jwtSettings);
            var tokenValidationParameters= new Microsoft.IdentityModel.Tokens.TokenValidationParameters
